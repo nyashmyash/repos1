@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="LicenseKeysDatabase" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=(localdb)\Projects;Initial Catalog=LicenseKeysDatabase;Integrated Security=True;Connect Timeout=30" SettingsObjectName="SysOfIssuingLicKeysApplication.Properties.Settings" SettingsPropertyName="LicenseKeysDatabaseConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Company" Member="Companies">
+    <Type Name="Company">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="NumberContract" Type="System.String" DbType="NVarChar(128)" CanBeNull="true" />
+      <Column Name="LimitKeys" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Company_Device" Member="Devices" ThisKey="Id" OtherKey="IdCompany" Type="Device" />
+    </Type>
+  </Table>
+  <Table Name="dbo.[Group]" Member="Groups">
+    <Type Name="Group">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="GroupName" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="GroupType" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Group_UserToGroup" Member="UserToGroups" ThisKey="Id" OtherKey="GroupID" Type="UserToGroup" />
+    </Type>
+  </Table>
+  <Table Name="dbo.[Key]" Member="Keys">
+    <Type Name="Key">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="KeyValue" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="DateStart" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DateEnd" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="TestMark" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Key_Device" Member="Devices" ThisKey="Id" OtherKey="IdKey" Type="Device" />
+      <Association Name="Key_HistoryOfKey" Member="HistoryOfKeys" ThisKey="Id" OtherKey="KeyId" Type="HistoryOfKey" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Device" Member="Devices">
+    <Type Name="Device">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Code" Type="System.String" DbType="NVarChar(32)" CanBeNull="true" />
+      <Column Name="SurnameOwner" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
+      <Column Name="PositionOwner" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
+      <Column Name="IdCompany" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IdKey" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Device_HistoryOfDevice" Member="HistoryOfDevices" ThisKey="Id" OtherKey="OriginalIDCode" Type="HistoryOfDevice" />
+      <Association Name="Company_Device" Member="Company" ThisKey="IdCompany" OtherKey="Id" Type="Company" IsForeignKey="true" />
+      <Association Name="Key_Device" Member="Key" ThisKey="IdKey" OtherKey="Id" Type="Key" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.HistoryOfDevice" Member="HistoryOfDevices">
+    <Type Name="HistoryOfDevice">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CodeValue" Type="System.String" DbType="NVarChar(32)" CanBeNull="true" />
+      <Column Name="NewCodeValue" Type="System.String" DbType="NVarChar(32)" CanBeNull="true" />
+      <Column Name="KeyValue" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="NewKeyValue" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="OriginalIDCode" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Device_HistoryOfDevice" Member="Device" ThisKey="OriginalIDCode" OtherKey="Id" Type="Device" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.[User]" Member="Users">
+    <Type Name="User">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Type" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Password" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="User_UserToGroup" Member="UserToGroups" ThisKey="Id" OtherKey="UserID" Type="UserToGroup" />
+    </Type>
+  </Table>
+  <Table Name="dbo.UserToGroup" Member="UserToGroups">
+    <Type Name="UserToGroup">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="UserID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="GroupID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="User_UserToGroup" Member="User" ThisKey="UserID" OtherKey="Id" Type="User" IsForeignKey="true" />
+      <Association Name="Group_UserToGroup" Member="Group" ThisKey="GroupID" OtherKey="Id" Type="Group" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.HistoryOfKey" Member="HistoryOfKeys">
+    <Type Name="HistoryOfKey">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="KeyId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="FromTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ToTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Reason" Type="System.String" DbType="NVarChar(150)" CanBeNull="true" />
+      <Association Name="Key_HistoryOfKey" Member="Key" ThisKey="KeyId" OtherKey="Id" Type="Key" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>
